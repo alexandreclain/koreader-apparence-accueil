@@ -1541,11 +1541,17 @@ userpatch.registerPatchPluginFunc("coverbrowser", function(plugin)
 
     -- Dessine la vignette hors écran (en niveaux de gris), la tourne de
     -- quelques degrés avec un léger lissage, puis la recopie à l'écran.
+    -- Sur un écran couleur (Boox 4C par exemple), on travaille en RGB32
+    -- (4 octets par pixel) pour garder les couleurs ; sinon en gris (1 octet).
     local function paintTilted(self, bb, x, y, angle)
         local size = self:getSize()
         local w, h = size.w, size.h
-        local src = Blitbuffer.new(w, h, Blitbuffer.TYPE_BB8)
-        local dst = Blitbuffer.new(w, h, Blitbuffer.TYPE_BB8)
+        local screen_type = bb:getType()
+        local color_screen = screen_type == Blitbuffer.TYPE_BBRGB32
+        local bb_type = color_screen and Blitbuffer.TYPE_BBRGB32 or Blitbuffer.TYPE_BB8
+        local bpp = color_screen and 4 or 1
+        local src = Blitbuffer.new(w, h, bb_type)
+        local dst = Blitbuffer.new(w, h, bb_type)
         src:fill(Blitbuffer.COLOR_WHITE)
         dst:fill(Blitbuffer.COLOR_WHITE)
         paintContent(self, src, 0, 0)
@@ -1559,6 +1565,7 @@ userpatch.registerPatchPluginFunc("coverbrowser", function(plugin)
         local c, sn = math.cos(rad), math.sin(rad)
         local cx, cy = w / 2, h / 2
         local floor = math.floor
+        local channels = color_screen and 3 or 1 -- RGB32 : R, G, B puis alpha (laissé opaque)
         for dy = 0, h - 1 do
             local ry = dy + 0.5 - cy
             local row = dy * ds
@@ -1566,20 +1573,26 @@ userpatch.registerPatchPluginFunc("coverbrowser", function(plugin)
                 local rx = dx + 0.5 - cx
                 local sx = cx + c * rx - sn * ry
                 local sy = cy + sn * rx + c * ry
-                -- 4 échantillons pour adoucir les bords
-                local sum = 0
-                for oy = -0.25, 0.25, 0.5 do
-                    local iy = floor(sy + oy)
-                    for ox = -0.25, 0.25, 0.5 do
-                        local ix = floor(sx + ox)
-                        if ix >= 0 and ix < w and iy >= 0 and iy < h then
-                            sum = sum + sp[iy * ss + ix]
-                        else
-                            sum = sum + 255
+                local out = row + dx * bpp
+                for ch = 0, channels - 1 do
+                    -- 4 échantillons pour adoucir les bords
+                    local sum = 0
+                    for oy = -0.25, 0.25, 0.5 do
+                        local iy = floor(sy + oy)
+                        for ox = -0.25, 0.25, 0.5 do
+                            local ix = floor(sx + ox)
+                            if ix >= 0 and ix < w and iy >= 0 and iy < h then
+                                sum = sum + sp[iy * ss + ix * bpp + ch]
+                            else
+                                sum = sum + 255
+                            end
                         end
                     end
+                    dp[out + ch] = floor(sum * 0.25 + 0.5)
                 end
-                dp[row + dx] = floor(sum * 0.25 + 0.5)
+                if color_screen then
+                    dp[out + 3] = 0xFF
+                end
             end
         end
         bb:blitFrom(dst, x, y, 0, 0, w, h)

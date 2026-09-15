@@ -78,7 +78,7 @@ Le nombre de colonnes et de lignes de la grille reste un réglage de KOReader : 
 ## Limites connues
 
 - Mode mosaïque uniquement ; le mode liste du Cover browser n'est pas habillé.
-- La rotation des vignettes est calculée pixel par pixel : imperceptible sur un Boox Go 6, à désactiver (`tilt_degrees = 0`) si une liseuse lente rame au changement de page.
+- La rotation des vignettes est calculée pixel par pixel (en couleur sur les écrans couleur) : imperceptible sur un Boox Go 6, à désactiver (`tilt_degrees = 0`) si une liseuse lente ou un grand écran rame au changement de page.
 - Le nombre de chapitres d'un livre n'est connu qu'après sa première ouverture.
 - Les notes moyennes d'Open Library sont souvent absentes pour les éditions françaises ; Google Books prend le relais mais a aussi des trous.
 - Les temps de lecture n'existent que pour ce qui a été lu avec le plugin Statistiques activé.
