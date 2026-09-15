@@ -1,0 +1,5 @@
+# Fichiers temporaires
+*.bak
+*.off
+Thumbs.db
+.DS_Store
