@@ -2,7 +2,7 @@
 
 Un *user patch* pour [KOReader](https://koreader.rocks) qui transforme l'écran d'accueil en vraie page de bibliothèque : le livre en cours mis en avant avec sa progression, des statistiques de lecture, un objectif quotidien, une étagère de couvertures uniformes, une fiche par livre avec récupération en ligne des couvertures et descriptions, et une barre de lecture repensée.
 
-Conçu et testé sur une liseuse **Boox Go 6** (Android) avec KOReader 2026.07, en mode mosaïque du Cover browser, grille 4 × 4. Il devrait fonctionner sur toute liseuse KOReader qui accepte les user patches (Kobo, Kindle, PocketBook, Android…), avec des réglages de taille à adapter.
+Conçu et testé sur **Boox Go 6** (6 pouces, noir et blanc) et **Boox Note Air 4C** (10,3 pouces, écran couleur), sous Android avec KOReader 2026.07, en mode mosaïque du Cover browser. Il devrait fonctionner sur toute liseuse KOReader qui accepte les user patches (Kobo, Kindle, PocketBook, Android…), avec des réglages de taille à adapter.
 
 > *English summary: a KOReader user patch that redesigns the file browser into a reader home page — current book hero with progress and reading-time estimates, reading statistics from the Statistics plugin, a daily reading goal, uniform cropped covers with status badges, a per-book card that fetches covers, descriptions and ratings from Open Library / Google Books, virtual folders by status, and a cleaner reading footer. All settings live in one `config.lua`. Comments and UI strings are in French.*
 
@@ -43,7 +43,7 @@ Ouverte d'un tap sur une couverture : couverture, titre, auteur, série, mots-cl
 
 Si le patch échoue, KOReader affiche « Error applying patch » au démarrage et continue sans lui : rien ne bloque la liseuse. Pour désactiver : renommer `2-apparence-accueil.lua` en `.lua.off` ou le supprimer.
 
-**Prérequis** : KOReader 2025.04 ou plus récent (testé avec 2026.07.1), le plugin Cover browser en mode mosaïque, le plugin Statistiques activé pour les temps et statistiques (il l'est par défaut). Sur Android, la version F-Droid de KOReader n'exécute pas les user patches.
+**Prérequis** : KOReader 2025.04 ou plus récent (testé avec 2026.07.1 sur Boox Go 6 et Boox Note Air 4C), le plugin Cover browser en mode mosaïque, le plugin Statistiques activé pour les temps et statistiques (il l'est par défaut). Sur Android, la version F-Droid de KOReader n'exécute pas les user patches.
 
 ## Réglages
 
@@ -78,6 +78,7 @@ Le nombre de colonnes et de lignes de la grille reste un réglage de KOReader : 
 ## Limites connues
 
 - Mode mosaïque uniquement ; le mode liste du Cover browser n'est pas habillé.
+- Sur un écran couleur (Boox 4C), les couvertures restent en couleur, y compris dans les vignettes tournées.
 - La rotation des vignettes est calculée pixel par pixel (en couleur sur les écrans couleur) : imperceptible sur un Boox Go 6, à désactiver (`tilt_degrees = 0`) si une liseuse lente ou un grand écran rame au changement de page.
 - Le nombre de chapitres d'un livre n'est connu qu'après sa première ouverture.
 - Les notes moyennes d'Open Library sont souvent absentes pour les éditions françaises ; Google Books prend le relais mais a aussi des trous.
